@@ -59,7 +59,6 @@ public class RentalService {
         return rentDataAccessService.insertRent(rent);
     }
 
-
     // get all overviews for 2 view
     public List<OverviewRent> allOverviewRent() {
         List<Rent> rentList = getAllRent();
@@ -71,11 +70,7 @@ public class RentalService {
     }
 
     public BigDecimal summaryProfit() {
-        return allOverviewRent().stream()
-                .map(OverviewRent::getRevenue)
-                .collect(Collectors.toSet())
-                .stream()
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+       return rentDataAccessService.sum();
     }
 
     public OverviewRent overviewRent(final Rent rent) {
@@ -88,6 +83,14 @@ public class RentalService {
                 .build();
     }
 
+    public BigDecimal summaryCost(final Rent rent) {
+        LocalDate date1 = rent.getStartTime();
+        LocalDate date2 = rent.getEndTime();
+        long daysDiff = ChronoUnit.DAYS.between(date1, date2);
+        BigDecimal bigDecimal = new BigDecimal(daysDiff);
+        return rent.getCar().getPrice().multiply(bigDecimal);
+    }
+
     public List<Rent> getAllRent() {
         List<Rent> rents = rentDataAccessService.selectRentals();
         for (int i = 0; i < rents.size(); i++) {
@@ -97,15 +100,6 @@ public class RentalService {
             );
         }
         return rents;
-    }
-
-    public BigDecimal summaryCost(final Rent rent) {
-
-        LocalDate date1 = rent.getStartTime();
-        LocalDate date2 = rent.getEndTime();
-        long daysDiff = ChronoUnit.DAYS.between(date1, date2);
-        BigDecimal bigDecimal = new BigDecimal(daysDiff);
-        return rent.getCar().getPrice().multiply(bigDecimal);
     }
 
     private void validateAge(final int age) {

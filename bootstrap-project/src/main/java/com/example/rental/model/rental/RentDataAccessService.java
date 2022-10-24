@@ -9,12 +9,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-
 
 @Repository
 public class RentDataAccessService implements RentDao {
@@ -53,8 +51,6 @@ public class RentDataAccessService implements RentDao {
         return rent;
     }
 
-
-
     public int selectRentsByAvailableCar(final int carId, final LocalDate startTime, final LocalDate endTime) {
         String sql = "SELECT * from rents where car_id=" + carId +
                 " and start_time between '" + startTime + "' and '" + endTime +
@@ -73,4 +69,9 @@ public class RentDataAccessService implements RentDao {
         return jdbcTemplate.query(sql, new RentalRowMapper());
     }
 
+    public BigDecimal sum(){
+        String sql = "SELECT sum(c.price*(r.end_time-r.start_time))" +
+                "from rents r left join cars c on c.id = R.car_id;";
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class);
+    }
 }
