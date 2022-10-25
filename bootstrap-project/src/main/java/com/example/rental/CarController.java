@@ -32,27 +32,20 @@ public class CarController {
     }
 
 
-    @GetMapping("/car/isAvailable")
-    public List<Car> getAvailableCars() {
-        return carService.getAvailableCars();
-    }
-
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BigDecimal> addRent(@RequestBody final RentRequest body) {
         try {
             BigDecimal bigDecimal = rentalService.summaryCost(rentalService.createRental(body));
             return new ResponseEntity<>(bigDecimal, HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity(e.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/profit")
     public BigDecimal profit() {
-        System.out.println(rentalService.summaryProfit());
-
         return rentalService.summaryProfit();
     }
 

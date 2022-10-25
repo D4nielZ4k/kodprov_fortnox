@@ -1,9 +1,9 @@
 package com.example.rental.model.rental;
 
-
 import com.example.rental.exceptions.AgeException;
 import com.example.rental.exceptions.CarException;
 import com.example.rental.exceptions.DateException;
+import com.example.rental.exceptions.NameException;
 import com.example.rental.model.car.Car;
 import com.example.rental.model.car.CarService;
 import org.springframework.stereotype.Service;
@@ -31,13 +31,13 @@ public class RentalService {
         validateAge(rentRequest.getAgeDriver());
         startDataValidator(LocalDate.parse(rentRequest.getStart()));
         endDataValidator(LocalDate.parse(rentRequest.getStart()), LocalDate.parse(rentRequest.getEnd()));
+        nameValidation(rentRequest.getDriverName());
 
         Car car = carService.getCarById(rentRequest.getCarId());
 
         if (car == null || rentDataAccessService.selectRentsByAvailableCar(car.getId(),
                 LocalDate.parse(rentRequest.getStart()),
-                LocalDate.parse(rentRequest.getEnd())) > 0)
-        {
+                LocalDate.parse(rentRequest.getEnd())) > 0) {
             throw new CarException("this car is not available at this time");
         }
 
@@ -59,7 +59,7 @@ public class RentalService {
     }
 
     public BigDecimal summaryProfit() {
-       return rentDataAccessService.sum();
+        return rentDataAccessService.sum();
     }
 
     public OverviewRent overviewRent(final Rent rent) {
@@ -106,6 +106,14 @@ public class RentalService {
     private void endDataValidator(final LocalDate startDate, final LocalDate endDate) {
         if (endDate.isBefore(startDate) || (endDate == startDate)) {
             throw new DateException("end");
+        }
+    }
+
+    private void nameValidation(final String nameDriver) {
+        String expression = "^[a-zA-Z\\s]+";
+
+        if (!nameDriver.matches(expression)) {
+            throw new NameException("Driver name can't contain numbers");
         }
     }
 
