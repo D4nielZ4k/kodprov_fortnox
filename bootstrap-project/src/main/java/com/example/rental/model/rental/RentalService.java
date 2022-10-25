@@ -6,21 +6,13 @@ import com.example.rental.exceptions.CarException;
 import com.example.rental.exceptions.DateException;
 import com.example.rental.model.car.Car;
 import com.example.rental.model.car.CarService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.xml.datatype.Duration;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -34,9 +26,6 @@ public class RentalService {
         this.carService = carService;
     }
 
-
-    //Create RENT
-    //special Exception TO DO
     public Rent createRental(final RentRequest rentRequest) {
 
         validateAge(rentRequest.getAgeDriver());

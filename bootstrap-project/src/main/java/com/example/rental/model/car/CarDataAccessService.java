@@ -2,12 +2,9 @@ package com.example.rental.model.car;
 
 import com.example.rental.exceptions.CarException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -69,19 +66,4 @@ public class CarDataAccessService implements CarDao {
         }
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void dbInit() {
-
-        jdbcTemplate.execute("DROP TABLE IF EXISTS " + "cars");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS cars(id BIGSERIAL PRIMARY KEY,name name, price decimal(18,2))");
-
-        insertCar(new Car("Volvo S60", new BigDecimal(1500), true));
-        insertCar(new Car("Volkswagen Golf", new BigDecimal(1333), true));
-        insertCar(new Car("Ford Mustang", new BigDecimal(3000), true));
-        insertCar(new Car("Ford Transit", new BigDecimal(2400), true));
-
-        jdbcTemplate.execute("DROP TABLE IF EXISTS " + "rents");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS rents(id BIGSERIAL PRIMARY KEY,car_id int,driver_name name,driver_age int,start_time date, end_time date)");
-
-    }
 }

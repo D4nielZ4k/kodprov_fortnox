@@ -20,8 +20,6 @@ public class Config {
     @Value("${spring.datasource.password}")
     private String password;
 
-    @Value("${driver}")
-    private String platform;
 
     @Bean
     public DataSource getDataSource() {
@@ -29,7 +27,6 @@ public class Config {
         dataSourceBuilder.url(url);
         dataSourceBuilder.username(my_user);
         dataSourceBuilder.password(password);
-        dataSourceBuilder.driverClassName(platform);
         return dataSourceBuilder.build();
     }
 
