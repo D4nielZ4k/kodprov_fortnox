@@ -5,7 +5,8 @@ import com.example.rental.exceptions.AgeException;
 import com.example.rental.exceptions.CarException;
 import com.example.rental.exceptions.NameException;
 import com.example.rental.model.car.CarService;
-import com.example.rental.model.rental.RentRequest;
+import com.example.rental.model.rental.dto.OverviewRent;
+import com.example.rental.model.rental.dto.RentRequest;
 import com.example.rental.model.rental.RentalService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 
@@ -31,8 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application-integrationtest.properties")
+@TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class RentalAppIntegrationTest {
 
     @Autowired
@@ -47,10 +48,10 @@ public class RentalAppIntegrationTest {
     @Autowired
     private RentalService rentalService;
 
-    @BeforeEach
-    void before() {
-        jdbcTemplate.execute("DELETE FROM rents");
-    }
+   @BeforeEach
+   void before() {
+       jdbcTemplate.execute("DELETE FROM rents");
+   }
 
     @Test
     void shouldReturnCarsList() throws Exception {
@@ -77,7 +78,6 @@ public class RentalAppIntegrationTest {
         // then
 
         Assertions.assertEquals(1, rentalService.getAllRent().size());
-
     }
 
     @Test
@@ -168,7 +168,6 @@ public class RentalAppIntegrationTest {
         rentalService.createRental(rentRequest2);
         rentalService.createRental(rentRequest);
         // when
-
         BigDecimal incoming = new BigDecimal(String.valueOf(rentalService.summaryProfit()));
         BigDecimal expected = new BigDecimal("4500.00");
         // then
@@ -176,36 +175,27 @@ public class RentalAppIntegrationTest {
         assertThat(incoming, Matchers.comparesEqualTo(expected));
     }
 
+
+    @Test
+    void shouldReturnOverviewRents(){
+        // given
+        RentRequest rentRequest = RentRequest.builder()
+                .carId(3)
+                .start("2023-12-11")
+                .end("2023-12-13")
+                .ageDriver(18)
+                .driverName("testName")
+                .build();
+        rentalService.createRental(rentRequest);
+        // when
+
+        List<OverviewRent> overviewRentList = rentalService.allOverviewRent();
+        // then
+
+        Assertions.assertEquals(1, rentalService.getAllRent().size());
+        Assertions.assertEquals(overviewRentList.get(0).getRevenue(), new BigDecimal("6000.00"));
+        Assertions.assertTrue(overviewRentList.get(0).getNameOFDriver().equals("testName"));
+        Assertions.assertTrue(overviewRentList.get(0).getCar().getName().equals("Ford Mustang"));
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

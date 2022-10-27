@@ -1,4 +1,4 @@
-package com.example.rental.model.rental;
+package com.example.rental.model.rental.dto;
 
 import com.example.rental.model.car.Car;
 import lombok.AllArgsConstructor;

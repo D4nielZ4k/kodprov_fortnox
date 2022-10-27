@@ -1,9 +1,8 @@
-package com.example.rental.model.rental;
+package com.example.rental.model.rental.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
 
 @Data
 @SuperBuilder

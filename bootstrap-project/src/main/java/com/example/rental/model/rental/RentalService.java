@@ -6,6 +6,8 @@ import com.example.rental.exceptions.DateException;
 import com.example.rental.exceptions.NameException;
 import com.example.rental.model.car.Car;
 import com.example.rental.model.car.CarService;
+import com.example.rental.model.rental.dto.OverviewRent;
+import com.example.rental.model.rental.dto.RentRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -48,7 +50,6 @@ public class RentalService {
         return rentDataAccessService.insertRent(rent);
     }
 
-    // get all overviews for 2 view
     public List<OverviewRent> allOverviewRent() {
         List<Rent> rentList = getAllRent();
         List<OverviewRent> finalList = new ArrayList<>();
@@ -99,13 +100,13 @@ public class RentalService {
 
     private void startDataValidator(final LocalDate localDate) {
         if (localDate.isBefore(LocalDate.now())) {
-            throw new DateException("future");
+            throw new DateException("the start date must be in the future");
         }
     }
 
     private void endDataValidator(final LocalDate startDate, final LocalDate endDate) {
         if (endDate.isBefore(startDate) || (endDate == startDate)) {
-            throw new DateException("end");
+            throw new DateException("the end date must be after the start date");
         }
     }
 
